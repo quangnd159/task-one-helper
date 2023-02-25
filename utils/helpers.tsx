@@ -5,7 +5,6 @@ type OpenAIResponse = {
 export async function getOpenAIResponse(
   request: string
 ): Promise<string> {
-  console.log(process.env.OPENAI_API_KEY);
   const response = await fetch("https://api.openai.com/v1/completions", {
     method: "POST",
     headers: {
@@ -14,7 +13,7 @@ export async function getOpenAIResponse(
     },
     body: JSON.stringify({
       model: "text-davinci-003",
-      prompt: `Use the chart/graph language typically found in The Economist reports to write three variations of sentence to ${request}. Wrap the whole thing in <ol></ol> and wrap each sentence in <li></li>.`,
+      prompt: `Use the chart/graph language typically found in The Economist reports to write three variations of sentence to ${request}. Wrap each sentence in <li></li>. Highlight collocations by wrapping them with <em></em>`,
       temperature: 0.6,
       max_tokens: 200,
       top_p: 1,

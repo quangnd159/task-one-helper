@@ -5,19 +5,43 @@ import { getOpenAIResponse } from "../utils/helpers";
 export default function Home() {
   const [request, setRequest] = useState<string>("");
   const [response, setResponse] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault();
 
     if (!request) return;
+
+    setIsLoading(true);
 
     try {
       const res = await getOpenAIResponse(request);
       setResponse(res);
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
+
+  const handleRequestChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRequest(event.target.value);
+  };
+
+  const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && request) {
+      setIsLoading(true);
+
+      try {
+        const res = await getOpenAIResponse(request);
+        setResponse(res);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
 
   return (
     <div className="container mx-auto mt-10 px-4">
@@ -28,41 +52,43 @@ export default function Home() {
 
       <main>
         <h1 className="text-4xl font-bold mb-4">
-          Welcome to Task One Helper
+          🎩 Task One Helper
         </h1>
-        <p className="text-gray-600 mb-8">
-          Enter a request below and hit "Get Help" to generate a response
+        <p className="text-gray-500 mb-8">
+          Let AI write some model sentences for you ✨
         </p>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="request" className="block text-gray-700 font-bold">
-              Request
-            </label>
             <input
               type="text"
               name="request"
               id="request"
               value={request}
-              onChange={(e) => setRequest(e.target.value)}
-              className="w-full px-3 py-2 border rounded"
-              placeholder="Enter your request"
+              onChange={handleRequestChange}
+              className="w-full px-3 py-2 border"
+              placeholder="e.g. 97% households owned tv 1972"
             />
           </div>
 
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded"
-          >
-            Get Help
-          </button>
+          {isLoading ? (
+            <div className="py-2 w-full text-center bg-gray-200 rounded-md animate-pulse">
+              Processing
+            </div>
+          ) : (
+            <button
+              type="submit"
+              className="px-5 h-9 uppercase font-semibold tracking-wider bg-amber-400 text-black"
+            >
+              Get Help
+            </button>
+          )}
         </form>
 
         {response && (
           <div className="mt-8">
-            <h2 className="text-xl font-bold mb-2">Response:</h2>
             <ol
-              className="list-decimal list-inside"
+              className="list-decimal list-inside text-2xl font-serif leading-10 text-slate-600"
               dangerouslySetInnerHTML={{ __html: response }}
             />
           </div>
