@@ -55,7 +55,7 @@ export default function Home() {
           🎩 Task One Helper
         </h1>
         <p className="text-gray-500 mb-8">
-          Let AI write some model sentences for you ✨
+          Let ChatGPT write some model sentences for you ✨
         </p>
 
         <form onSubmit={handleSubmit}>
@@ -68,6 +68,7 @@ export default function Home() {
               onChange={handleRequestChange}
               className="w-full px-3 py-2 border"
               placeholder="e.g. 97% households owned tv 1972"
+              autoComplete="off"
             />
           </div>
 
@@ -87,8 +88,8 @@ export default function Home() {
 
         {response && (
           <div className="mt-8">
-            <ol
-              className="list-decimal list-inside text-2xl font-serif leading-10 text-slate-600"
+            <ul
+              className="list-none list-inside text-2xl font-serif leading-10 text-slate-600 custom-list-decimal"
               dangerouslySetInnerHTML={{ __html: response }}
             />
           </div>
